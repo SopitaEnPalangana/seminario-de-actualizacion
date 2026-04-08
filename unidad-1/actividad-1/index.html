@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadorita</title>
+    <style>
+        .display{
+            border-color: rgb(218, 213, 213);
+            padding: 5px;
+            width: 100%;
+            text-align: right;
+            font-family: 'Calibri', sans-serif;
+            font-weight: bold;
+        }
+
+        .Nbutton {
+            background: rgba(91, 131, 240, 0.959);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin: 5px;
+            width: 80%;
+            padding: 8px;
+            border-color: rgb(164, 198, 250);
+            border-radius: 5px;
+            box-shadow: 0px 5px rgb(61, 77, 151);
+        }
+
+        .OPbutton {
+            background: rgb(162, 231, 122);
+            color: white;
+            font-size: 12px;
+            font-weight: bolder;
+            margin: 5px;
+            width: 80%;
+            padding: 8px;
+            border-color: rgb(156, 241, 156);
+            border-radius: 5px;
+            box-shadow: 0px 5px rgb(88, 187, 88);
+        }
+
+        .Rbutton{
+            background: rgba(255, 182, 23, 0.904);
+            color: white;
+            font-size: 12px;
+            font-weight: bolder;
+            margin: 5px;
+            width: 80%;
+            padding: 8px;
+            border-color: rgb(247, 206, 93);
+            border-radius: 5px;
+            box-shadow: 0px 5px rgb(223, 162, 50);
+        }
+
+        .deleteButton {
+            background: red;
+            color: white;
+            padding: 7px;
+            border-color: rgb(221, 121, 121);
+            border-radius: 5px;
+            box-shadow: 0px 5px rgb(226, 25, 25);
+            width: 100%;
+            font-size: 12px;
+            font-family: 'Calibri', sans-serif;
+            font-weight: bold;
+        }
+        
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td colspan="4">
+                <input class="display" type="text" id="display" value="">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('7')">7</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('8')">8</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('9')">9</button>
+            </td>
+            <td>
+                <button class="OPbutton" onclick="appendToDisplay('+')">+</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('4')">4</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('5')">5</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('6')">6</button>
+            </td>
+            <td>
+                <button class="OPbutton" onclick="appendToDisplay('-')">-</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('3')">3</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('2')">2</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('1')">1</button>
+            </td>
+            <td>
+                <button class="OPbutton" onclick="appendToDisplay('*')">*</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('0')">0</button>
+            </td>
+            <td>
+                <button class="Nbutton" onclick="appendToDisplay('.')">.</button>
+            </td>
+            <td>
+                <button class="Rbutton" onclick="calculateResult()">=</button>
+            </td>
+            <td>
+                <button class="OPbutton" onclick="appendToDisplay('/')">/</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <button class="deleteButton" onclick="clearDisplay()">Borrar</button>
+            </td>
+        </tr>
+    </table>
+</body>
+<script type="text/javascript">
+    function clearDisplay(){
+        display.value = "";
+    }
+
+    function appendToDisplay(value){
+        display.value += value;
+    }
+
+    function calculateResult(){
+        display.value = eval(display.value)
+    }
+</script>
+</html>
