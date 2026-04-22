@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Calculadorita con WebComponents</title>
+    </head>
+    <body></body>
+
+    <script type="text/javascript">
+    class Calcutadorita extends HTMLElement
+    {
+        constructor()
+        {
+            super()
+
+            this.display = document.createElement('input');
+
+            //Botones
+            this.button7 = document.createElement('button');
+            this.button7.innerText = '7';
+            this.button8 = document.createElement('button');
+            this.button8.innerText = '8';
+            this.button9 = document.createElement('button');
+            this.button9.innerText = '9';
+            this.buttonPlus = document.createElement('button');
+            this.buttonPlus.innerText = '+';
+
+            this.button4 = document.createElement('button');
+            this.button4.innerText = '4';
+            this.button5 = document.createElement('button');
+            this.button5.innerText = '5';
+            this.button6 = document.createElement('button');
+            this.button6.innerText = '6';
+            this.buttonMinus = document.createElement('button');
+            this.buttonMinus.innerText = '-';
+
+            this.button1 = document.createElement('button');
+            this.button1.innerText = '1';
+            this.button2 = document.createElement('button');
+            this.button2.innerText = '2';
+            this.button3 = document.createElement('button');
+            this.button3.innerText = '3';
+            this.buttonProd = document.createElement('button');
+            this.buttonProd.innerText = '*';
+
+            this.button0 = document.createElement('button');
+            this.button0.innerText = '0';
+            this.buttonDot = document.createElement('button');
+            this.buttonDot.innerText = '.';
+            this.buttonResult = document.createElement('button');
+            this.buttonResult.innerText = '=';
+            this.buttonDivide = document.createElement('button');
+            this.buttonDivide.innerText = '/';
+
+            this.buttonDelete = document.createElement('button');
+            this.buttonDelete.innerText = 'Borrar';
+
+            this.appendChild(this.display);
+            this.appendChild(this.button0);
+            this.appendChild(this.button2);
+            this.appendChild(this.button3);
+            this.appendChild(this.button4);
+            this.appendChild(this.button5);
+            this.appendChild(this.button6);
+            this.appendChild(this.button7);
+            this.appendChild(this.button8);
+            this.appendChild(this.button9);
+            this.appendChild(this.buttonPlus);
+            this.appendChild(this.buttonMinus);
+            this.appendChild(this.buttonProd);
+            this.appendChild(this.buttonDivide);
+            this.appendChild(this.buttonDot);
+            this.appendChild(this.buttonResult);
+            this.appendChild(this.buttonDelete);
+
+        }
+
+        onbutton0click()
+        {
+            this.display.value += '0';
+        }
+        onbutton1click()
+        {
+            this.display.value += '1';
+        }
+
+        onbutton2click()
+        {
+            this.display.value += '2';
+        }
+
+        onbutton3click()
+        {
+            this.display.value += '3';
+        }
+
+        onbutton4click()
+        {
+            this.display.value += '4';
+        }
+
+        onbutton5click()
+        {
+            this.display.value += '5';
+        }
+
+        onbutton6click()
+        {
+            this.display.value += '6';
+        }
+
+        onbutton7click()
+        {
+            this.display.value += '7';
+        }
+
+        onbutton8click()
+        {
+            this.display.value += '8';
+        }
+
+        onbutton9click()
+        {
+            this.display.value += '9';
+        }
+
+        onbuttonPlusclick()
+        {
+            this.display.value += '+';
+        }
+
+        onbuttonMinusclick()
+        {
+            this.display.value += '-';
+        }
+
+        onbuttonProdclick()
+        {
+            this.display.value += '*';
+        }
+
+        onbuttonDivideclick()
+        {
+            this.display.value += '/';
+        }
+
+        onbuttonDotclick()
+        {
+            this.display.value += '.';
+        }
+
+        onbuttonResultclick()
+        {
+            this.display.value = eval(this.display.value);
+        }
+
+        onbuttonDeleteclick()
+        {
+            this.display.value = '';
+        }
+
+        connectedCallback()
+        {
+            this.button0.onclick = this.onbutton0click.bind(this);
+            this.button1.onclick = this.onbutton1click.bind(this);
+            this.button2.onclick = this.onbutton2click.bind(this);
+            this.button3.onclick = this.onbutton3click.bind(this);
+            this.button4.onclick = this.onbutton4click.bind(this);
+            this.button5.onclick = this.onbutton5click.bind(this);
+            this.button6.onclick = this.onbutton6click.bind(this);
+            this.button7.onclick = this.onbutton7click.bind(this);
+            this.button8.onclick = this.onbutton8click.bind(this);
+            this.button9.onclick = this.onbutton9click.bind(this);
+            this.buttonPlus.onclick = this.onbuttonPlusclick.bind(this);
+            this.buttonMinus.onclick = this.onbuttonMinusclick.bind(this);
+            this.buttonProd.onclick = this.onbuttonProdclick.bind(this);
+            this.buttonDivide.onclick = this.onbuttonDivideclick.bind(this);
+            this.buttonDot.onclick = this.onbuttonDotclick.bind(this);
+            this.buttonResult.onclick = this.onbuttonResultclick.bind(this);
+            this.buttonDelete.onclick = this.onbuttonDeleteclick.bind(this);
+        }
+
+        disconnectedCallback()
+        {
+            this.button0.onclick = null;
+            this.button1.onclick = null;
+            this.button2.onclick = null;
+            this.button3.onclick = null;
+            this.button4.onclick = null;
+            this.button5.onclick = null;
+            this.button6.onclick = null;
+            this.button7.onclick = null;
+            this.button8.onclick = null;
+            this.button9.onclick = null;
+            this.buttonPlus.onclick = null;
+            this.buttonMinus.onclick = null;
+            this.buttonProd.onclick = null;
+            this.buttonDivide.onclick = null;
+            this.buttonDot.onclick = null;
+            this.buttonResult.onclick = null;
+            this.buttonDelete.onclick = null;
+        }
+    }
+
+    customElements.define('x-calculadorita', Calcutadorita);
+
+    function main()
+    {
+        let miCalcu = new Calcutadorita();
+        document.body.appendChild(miCalcu);
+    }
+
+    window.onload = main;
+    </script>
+
+</html>
