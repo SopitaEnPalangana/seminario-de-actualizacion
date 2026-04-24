@@ -4,6 +4,79 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Calculadorita con WebComponents</title>
+        <style>
+            x-calculadorita {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+
+            .table{        /*el css de la tabla y x-calculadorita se lo tuve que pedir a la ia, no pude descular como hacerlo*/
+                width: auto;
+                margin: 0 auto;
+                border-collapse: collapse;
+                table-layout: fixed;
+            }
+            .stdisplay{
+                border-color: rgb(218, 213, 213);
+                padding: 5px;
+                width: 100%;
+                text-align: right;
+                font-family: 'Calibri', sans-serif;
+                font-weight: bold;                
+            }
+
+            .numbutton{
+                background: rgba(91, 131, 240, 0.959);
+                color: white;
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                margin: 5px;
+                width: 80%;
+                padding: 8px;
+                border-color: rgb(164, 198, 250);
+                border-radius: 5px;
+                box-shadow: 0px 5px rgb(61, 77, 151);
+            }
+            .opbutton{
+                background: rgb(162, 231, 122);
+                color: white;
+                font-size: 12px;
+                font-weight: bolder;
+                margin: 5px;
+                width: 80%;
+                padding: 8px;
+                border-color: rgb(156, 241, 156);
+                border-radius: 5px;
+                box-shadow: 0px 5px rgb(88, 187, 88);
+            }
+            .resbutton{
+                background: rgba(255, 182, 23, 0.904);
+                color: white;
+                font-size: 12px;
+                font-weight: bolder;
+                margin: 5px;
+                width: 80%;
+                padding: 8px;
+                border-color: rgb(247, 206, 93);
+                border-radius: 5px;
+                box-shadow: 0px 5px rgb(223, 162, 50);
+            }
+            .delbutton{
+                background: red;
+                color: white;
+                padding: 7px;
+                border-color: rgb(221, 121, 121);
+                border-radius: 5px;
+                box-shadow: 0px 5px rgb(226, 25, 25);
+                width: 100%;
+                font-size: 12px;
+                font-family: 'Calibri', sans-serif;
+                font-weight: bold;
+            }
+        </style>
     </head>
     <body></body>
 
@@ -15,65 +88,141 @@
             super()
 
             this.display = document.createElement('input');
-
+            this.display.readOnly = true;
+            this.display.classList.add("stdisplay");
             //Botones
             this.button7 = document.createElement('button');
             this.button7.innerText = '7';
+            this.button7.classList.add("numbutton");
             this.button8 = document.createElement('button');
             this.button8.innerText = '8';
+            this.button8.classList.add("numbutton");
             this.button9 = document.createElement('button');
             this.button9.innerText = '9';
+            this.button9.classList.add("numbutton");
             this.buttonPlus = document.createElement('button');
             this.buttonPlus.innerText = '+';
+            this.buttonPlus.classList.add("opbutton");
 
             this.button4 = document.createElement('button');
             this.button4.innerText = '4';
+            this.button4.classList.add("numbutton");
             this.button5 = document.createElement('button');
             this.button5.innerText = '5';
+            this.button5.classList.add("numbutton");
             this.button6 = document.createElement('button');
             this.button6.innerText = '6';
+            this.button6.classList.add("numbutton");
             this.buttonMinus = document.createElement('button');
             this.buttonMinus.innerText = '-';
+            this.buttonMinus.classList.add("opbutton");
 
             this.button1 = document.createElement('button');
             this.button1.innerText = '1';
+            this.button1.classList.add("numbutton");
             this.button2 = document.createElement('button');
             this.button2.innerText = '2';
+            this.button2.classList.add("numbutton");
             this.button3 = document.createElement('button');
             this.button3.innerText = '3';
+            this.button3.classList.add("numbutton");
             this.buttonProd = document.createElement('button');
             this.buttonProd.innerText = '*';
+            this.buttonProd.classList.add("opbutton");
 
             this.button0 = document.createElement('button');
             this.button0.innerText = '0';
+            this.button0.classList.add("numbutton");
             this.buttonDot = document.createElement('button');
             this.buttonDot.innerText = '.';
+            this.buttonDot.classList.add("numbutton");
             this.buttonResult = document.createElement('button');
             this.buttonResult.innerText = '=';
+            this.buttonResult.classList.add("resbutton");
             this.buttonDivide = document.createElement('button');
             this.buttonDivide.innerText = '/';
+            this.buttonDivide.classList.add("opbutton");
 
             this.buttonDelete = document.createElement('button');
             this.buttonDelete.innerText = 'Borrar';
+            this.buttonDelete.classList.add("delbutton");
 
-            this.appendChild(this.display);
-            this.appendChild(this.button0);
-            this.appendChild(this.button2);
-            this.appendChild(this.button3);
-            this.appendChild(this.button4);
-            this.appendChild(this.button5);
-            this.appendChild(this.button6);
-            this.appendChild(this.button7);
-            this.appendChild(this.button8);
-            this.appendChild(this.button9);
-            this.appendChild(this.buttonPlus);
-            this.appendChild(this.buttonMinus);
-            this.appendChild(this.buttonProd);
-            this.appendChild(this.buttonDivide);
-            this.appendChild(this.buttonDot);
-            this.appendChild(this.buttonResult);
-            this.appendChild(this.buttonDelete);
+            this.tablita = document.createElement('table');
+            this.tablita.classList.add("table");
+            let row1 = this.tablita.insertRow();
+            let col1 = row1.insertCell();
+            col1.colSpan = 4;
+            col1.appendChild(this.display);
 
+            let row2 = this.tablita.insertRow();
+            let column2A = row2.insertCell();
+            let column2B = row2.insertCell();
+            let column2C = row2.insertCell();
+            let column2D = row2.insertCell();
+            
+            column2A.appendChild(this.button7);
+            column2B.appendChild(this.button8);
+            column2C.appendChild(this.button9);
+            column2D.appendChild(this.buttonPlus);
+
+            let row3 = this.tablita.insertRow();
+            let column3A = row3.insertCell();
+            let column3B = row3.insertCell();
+            let column3C = row3.insertCell();
+            let column3D = row3.insertCell();
+
+            column3A.appendChild(this.button4);
+            column3B.appendChild(this.button5);
+            column3C.appendChild(this.button6);
+            column3D.appendChild(this.buttonMinus);
+
+            let row4 = this.tablita.insertRow();
+            let column4A = row4.insertCell();
+            let column4B = row4.insertCell();
+            let column4C = row4.insertCell();
+            let column4D = row4.insertCell();
+
+            column4A.appendChild(this.button1);
+            column4B.appendChild(this.button2);
+            column4C.appendChild(this.button3);
+            column4D.appendChild(this.buttonProd);
+
+            let row5 = this.tablita.insertRow();
+            let column5A = row5.insertCell();
+            let column5B = row5.insertCell();
+            let column5C = row5.insertCell();
+            let column5D = row5.insertCell();
+
+            column5A.appendChild(this.button0);
+            column5B.appendChild(this.buttonDot);
+            column5C.appendChild(this.buttonResult);
+            column5D.appendChild(this.buttonDivide);
+
+            let row6 = this.tablita.insertRow();
+            let col6 = row6.insertCell();
+            col6.colSpan = 4;
+            col6.appendChild(this.buttonDelete);
+
+            this.appendChild(this.tablita);
+
+            //this.appendChild(this.display);
+            //this.appendChild(this.button0);
+            //this.appendChild(this.button1);
+            //this.appendChild(this.button2);
+            //this.appendChild(this.button3);
+            //this.appendChild(this.button4);
+            //this.appendChild(this.button5);
+            //this.appendChild(this.button6);
+            //this.appendChild(this.button7);
+            //this.appendChild(this.button8);
+            //this.appendChild(this.button9);
+            //this.appendChild(this.buttonPlus);
+            //this.appendChild(this.buttonMinus);
+            //this.appendChild(this.buttonProd);
+            //this.appendChild(this.buttonDivide);
+            //this.appendChild(this.buttonDot);
+            //this.appendChild(this.buttonResult);
+            //this.appendChild(this.buttonDelete);
         }
 
         onbutton0click()
