@@ -1,0 +1,168 @@
+<!--
+Desarrolle un WebComponent tipo "Formulario" que le permita cargar toda la información pertinente de la factura de AFIP adjuntada. 
+Este WebComponent deberá tener un botón "Generar factura" que deberá abrir una pestaña nueva con una gráfica del diseño de la factura solicitada
+
+            const formData = new FormData(this.invoiceform);
+            const body = new URLSearchParams(formData).toString();
+
+            const response = await fetch('/invoice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body
+            });
+            const data = await response.json();
+            console.log(data); // por ahora verificás que llegue bien
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio5</title>
+</head>
+<body></body>
+<script>
+    class Ejercicio5 extends HTMLElement
+    {
+        constructor()
+        {
+            super()
+                    
+            this.container = document.createElement('div');
+            this.container.className = 'container';
+            
+            this.invoicemaker= document.createElement('H1');
+            this.invoicemaker.textContent = "INVOICE MAKER";
+
+            this.defaultdata = document.createElement('p');
+            this.defaultdata.innerText = `Razon Social: Sopita SCS
+                Domicilio Comercial: Av. Siempre Viva 1234
+                Condición: IVA Resposable Inscripto
+                CUIT: 27-12345678-4
+                Ingresos Brutos: 
+                Fecha de inicio de Actividades: 01/01/1980
+
+                ---FACTURA B---
+                Punto de Venta: 0002
+                Comp Nro: 00000641
+                ----------------------
+                `;
+
+            this.invoiceform = document.createElement('form');
+            this.invoiceform.action = '/invoice';
+            this.invoiceform.method = 'POST';
+
+            this.periodolabel = document.createElement('label');
+            this.periodolabel.innerText = 'Periodo Facturado desde: '
+            this.periodostart = document.createElement('input');
+            this.periodostart.name = "periodostart";
+            this.periodostart.placeholder = "DD/MM/AAAA";
+            this.periodolabel2 = document.createElement('label');
+            this.periodolabel2.innerText = 'hasta: ';
+            this.periodolabel2.style = "margin-left: 10px";
+            this.periodofin = document.createElement('input');
+            this.periodofin.name = "periodofin";
+            this.periodofin.placeholder = "DD/MM/AAAA";
+
+            this.cuitlabel = document.createElement('label');
+            this.cuitlabel.innerText = '\n \nCUIT:';
+            this.cuit = document.createElement('input');
+            this.cuit.name = 'cuit';
+            this.cuit.placeholder = 'xxxxxxxxxx';
+            this.searchcuitbtn = document.createElement('button');
+            this.searchcuitbtn.innerText = 'Buscar CUIT';
+            this.searchcuitbtn.type = "button";
+            this.searchcuitbtn.style = "margin-left: 10px";
+
+            this.ApyNolabel = document.createElement('label');
+            this.ApyNolabel.innerText = '\n \n Apellido y Nombre/Razon Social: ';
+            this.ApyNo = document.createElement('input');
+            this.ApyNo.name = "apellidoynombre";
+            this.condicionIVAlabel = document.createElement('label');
+            this.condicionIVAlabel.innerText = 'Condicion frente al IVA: ';
+            this.condicionIVA = document.createElement('input');
+            this.condicionIVA.name = "condicionIVA";
+            this.domiciliolabel = document.createElement('label');
+            this.domiciliolabel.innerText = '\n \n Domicilio: ';
+            this.domicilio = document.createElement('input');
+            this.domicilio.name = "domicilio";
+            this.condicionventalabel = document.createElement('label');
+            this.condicionventalabel.innerText = 'Condicion de Venta: ';
+            this.condicionventa = document.createElement('input');
+            this.condicionventa.name = "condicionventa";
+
+            
+
+            this.boton = document.createElement('button');
+            this.boton.innerText = 'Submit';
+            this.boton.type = 'submit';
+
+            this.container.appendChild(this.invoicemaker);
+            this.container.appendChild(this.defaultdata);
+
+            this.invoiceform.appendChild(this.periodolabel);
+            this.invoiceform.appendChild(this.periodostart);
+            this.invoiceform.appendChild(this.periodolabel2);
+            this.invoiceform.appendChild(this.periodofin);
+            this.invoiceform.appendChild(this.cuitlabel);
+            this.invoiceform.appendChild(this.cuit);
+            this.invoiceform.appendChild(this.searchcuitbtn);
+            this.invoiceform.appendChild(this.ApyNolabel);
+            this.invoiceform.appendChild(this.ApyNo);
+            this.invoiceform.appendChild(this.condicionIVAlabel);
+            this.invoiceform.appendChild(this.condicionIVA);
+            this.invoiceform.appendChild(this.domiciliolabel);
+            this.invoiceform.appendChild(this.domicilio);
+            this.invoiceform.appendChild(this.condicionventalabel);
+            this.invoiceform.appendChild(this.condicionventa);
+            
+
+
+            
+            //this.invoiceform.appendChild(this.boton);
+
+            this.appendChild(this.container);
+            this.appendChild(this.invoiceform);
+        }
+
+        onbotonclick()
+        {
+            console.log("Generando factura");
+
+        }
+
+        onsearchcuitbtnclick()
+        {
+            if(this.cuit.value === "30522763922")
+            {
+                this.ApyNo.value = "INSSJP";
+                this.condicionIVA.value = "IVA Sujeto Exento";
+                this.domicilio.value = "Peru 169 - Capital Federal, CABA";
+                this.condicionventa.value = "Cuenta Corriente";
+            }
+        }
+        
+        connectedCallback()
+        {
+            this.boton.onclick = this.onbotonclick.bind(this);
+            this.searchcuitbtn.onclick = this.onsearchcuitbtnclick.bind(this);
+        }
+
+        disconnectedCallback()
+        {
+            this.boton.onclick = null;
+            this.searchcuitbtn.onclick = null;
+        }
+
+    }
+
+    customElements.define('x-ejercicio5', Ejercicio5);
+    function main()
+    {
+        let miEjercicio = new Ejercicio5;
+        document.body.appendChild(miEjercicio);
+    }
+    window.onload = main;
+</script>
+</html>

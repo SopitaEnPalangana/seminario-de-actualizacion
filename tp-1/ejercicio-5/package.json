@@ -1,0 +1,11 @@
+{
+  "name": "ejercicio-5",
+  "version": "1.0.0",
+  "main": "main.mjs",
+  "scripts": {
+    "server": "node main.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
