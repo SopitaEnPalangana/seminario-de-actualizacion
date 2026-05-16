@@ -1,0 +1,111 @@
+<!--
+2. Construya un programa que solicite al usuario su fecha de nacimiento y que luego valide si la cadena de texto ingresada es realmente una fecha. 
+En caso de que no, deberá mostrar un mensaje de error notificando que el texto suministrado es inválido y que vuelva a pedir la fecha hasta que sea válida. 
+Cada error deberá incluir el número de reintentos.
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ejercicio-2</title>
+    </head>
+    <style>
+        .container{
+            text-align: center;
+            margin-top: 200px;
+            height: 100px;
+        }
+    </style>
+    <body></body>
+    <script type="text/javascript">
+        class Ejercicio2 extends HTMLElement 
+        {
+            constructor()
+            {
+                super();
+
+                this.intentos = 0;
+
+                this.container = document.createElement('div');
+                this.container.className = 'container';
+
+                this.messagetext = document.createElement('p');
+                this.errorsign = document.createElement('p');
+                this.errorsign.style.color = 'red';
+
+                this.inputFecha = document.createElement('input');
+                this.inputFecha.type = 'text';
+                this.inputFecha.placeholder = 'DD/MM/AAAA';
+
+                this.boton = document.createElement('button');
+                this.boton.textContent = 'Confirmar';
+
+                this.container.appendChild(this.messagetext);
+                this.container.appendChild(this.inputFecha);
+                this.container.appendChild(this.boton);
+                this.container.appendChild(this.errorsign);
+
+                this.appendChild(this.container);
+            }
+
+            connectedCallback() {
+                this.messagetext.textContent = 'Ingrese su fecha de nacimiento (DD/MM/AAAA):';
+                this.boton.onclick = this.validar.bind(this);
+            }
+
+            disconnectedCallback() {
+                this.boton.onclick = null;
+            }
+
+            esFechaValida(str) {
+                // Verificar formato DD/MM/AAAA
+                const regex = /^\d{2}\/\d{2}\/\d{4}$/;   //esto no entendi, me lo dio Claude
+                //    inicia chain, 2 digitos, 2 digitos y / cierra el regex ????
+                if (!regex.test(str)) return false;
+
+                const [dia, mes, anio] = str.split('/').map(Number); //separa  la fecha en partes
+
+                // Verificar rangos básicos
+                if (mes < 1 || mes > 12) return false;
+                if (dia < 1) return false;
+                if (anio < 1900 || anio > new Date().getFullYear()) return false;
+
+                // Verificar que el día sea válido para ese mes y año
+                const fecha = new Date(anio, mes - 1, dia);
+                return (
+                    fecha.getFullYear() === anio &&
+                    fecha.getMonth() === mes - 1 &&
+                    fecha.getDate() === dia
+                );
+            }
+
+            validar() {
+                const valor = this.inputFecha.value.trim();
+
+                if (this.esFechaValida(valor)) {
+                    this.errorsign.textContent = '';
+                    this.messagetext.textContent = `Fecha válida: ${valor}`;
+                    this.inputFecha.disabled = true;
+                    this.boton.disabled = true;
+                } else {
+                    this.intentos++;
+                    this.errorsign.textContent = 
+                        `Fecha inválida. Reintento #${this.intentos}. Use el formato DD/MM/AAAA.`;
+                    this.inputFecha.value = '';
+                    this.inputFecha.focus();
+                }
+            }
+        }
+
+        customElements.define('x-ejercicio', Ejercicio2);
+        function main()
+        {
+            let miEjercicio = new Ejercicio2();
+            document.body.appendChild(miEjercicio);
+        }
+
+        window.onload = main;
+    </script>
+</html>

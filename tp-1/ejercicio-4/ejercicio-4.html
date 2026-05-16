@@ -1,0 +1,237 @@
+<!--
+A partir del ejemplo proporcionado en la página https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_chat&authuser=0 
+Nótese que se trata de una representación HTML/CSS/JS que denota una sección de intercambio de mensajes de Chat. 
+Construya una abstracción mediante WebComponents que encapsule esa interfaz 
+y diseñe un método que permita insertar los mensajes intercambiados.
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 0 20px;
+    }
+
+    .header button{
+        border-width: 2px;
+        border-radius: 10%;
+        height: 40px;
+        width: 80px;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    }
+
+    .darker {
+    border-color: #ccc;
+    background-color: #ddd;
+    }
+
+    .container::after {
+    content: "";
+    clear: both;
+    display: table;
+    }
+
+    .container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+    }
+
+    .container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+    }
+
+    .time-right {
+    float: right;
+    color: #aaa;
+    }
+
+    .time-left {
+    float: left;
+    color: #999;
+    }
+</style>
+</head>
+<body>
+<!-- 
+    <h2>Chat Messages</h2>
+
+    <div class="container">
+
+    <img src="https://www.w3schools.com/w3images/bandmember.jpg" alt="Avatar" style="width:100%;">
+    <p>Hello. How are you today?</p>
+    <span class="time-right">11:00</span>
+    </div>
+
+    <div class="container darker">
+    <img src="https://www.w3schools.com/w3images/avatar_g2.jpg" alt="Avatar" class="right" style="width:100%;">
+    <p>Hey! I'm fine. Thanks for asking!</p>
+    <span class="time-left">11:01</span>
+    </div>
+
+    <div class="container">
+    <img src="https://www.w3schools.com/w3images/bandmember.jpg" alt="Avatar" style="width:100%;">
+    <p>Sweet! So, what do you wanna do today?</p>
+    <span class="time-right">11:02</span>
+    </div>
+
+    <div class="container darker">
+    <img src="https://www.w3schools.com/w3images/avatar_g2.jpg" alt="Avatar" class="right" style="width:100%;">
+    <p>Nah, I dunno. Play soccer.. or learn more coding perhaps?</p>
+    <span class="time-left">11:05</span>
+    </div>-->
+
+</body>
+
+<script type="text/javascript">
+    class Ejercicio4 extends HTMLElement
+    {
+        constructor()
+        {
+            super()
+
+            let avatar1 = "https://www.w3schools.com/w3images/bandmember.jpg";
+            let avatar2 = "https://www.w3schools.com/w3images/avatar_g2.jpg";
+
+            this.header = document.createElement('div');
+            this.header.className = 'header';
+            this.titleH = document.createElement('h2');
+            this.titleH.textContent = "Chat Messages";
+            this.boton = document.createElement('button');
+            this.boton.innerText = "Start";
+
+            this.header.appendChild(this.titleH);
+            this.header.appendChild(this.boton);
+
+            this.container1 = document.createElement('div');
+            this.container1.className = 'container';
+            this.container1.style = "display:none";
+            this.profilepic1 = document.createElement('img');
+            this.profilepic1.alt = "Avatar";
+            this.profilepic1.style = "width:100%";
+            this.profilepic1.src = avatar1;
+            this.message1 = document.createElement('p');
+            this.message1.textContent = "Hello. How are you today?";
+            this.time1 = document.createElement('span');
+            this.time1.className = "time-right";
+            this.time1.textContent = '11:00';
+
+            this.container2 = document.createElement('div');
+            this.container2.className = 'container darker';
+            this.container2.style = "display:none";
+            this.profilepic2 = document.createElement('img');
+            this.profilepic2.alt = "Avatar";
+            this.profilepic2.style = "width:100%";
+            this.profilepic2.className = 'right';
+            this.profilepic2.src = avatar2;
+            this.message2 = document.createElement('p');
+            this.message2.textContent = "Hey! I'm fine. Thanks for asking!";
+            this.time2 = document.createElement('span');
+            this.time2.className = "time-left";
+            this.time2.textContent = '11:01';
+
+            this.container3 = document.createElement('div');
+            this.container3.className = 'container';
+            this.container3.style = "display:none";
+            this.profilepic3 = document.createElement('img');
+            this.profilepic3.alt = "Avatar";
+            this.profilepic3.style = "width:100%";
+            this.profilepic3.src = avatar1;
+            this.message3 = document.createElement('p');
+            this.message3.textContent = "Sweet! So, what do you wanna do today?";
+            this.time3 = document.createElement('span');
+            this.time3.className = "time-right";
+            this.time3.textContent = '11:02';
+
+            this.container4 = document.createElement('div');
+            this.container4.className = 'container darker';
+            this.container4.style = "display:none";
+            this.profilepic4 = document.createElement('img');
+            this.profilepic4.alt = "Avatar";
+            this.profilepic4.style = "width:100%";
+            this.profilepic4.className = 'right';
+            this.profilepic4.src = avatar2;
+            this.message4 = document.createElement('p');
+            this.message4.textContent = "Nah, I dunno. Play soccer.. or learn more coding perhaps?";
+            this.time4 = document.createElement('span');
+            this.time4.className = "time-left";
+            this.time4.textContent = '11:05';
+
+            this.container1.appendChild(this.profilepic1);
+            this.container1.appendChild(this.message1);
+            this.container1.appendChild(this.time1);
+            this.container2.appendChild(this.profilepic2);
+            this.container2.appendChild(this.message2);
+            this.container2.appendChild(this.time2);
+            this.container3.appendChild(this.profilepic3);
+            this.container3.appendChild(this.message3);
+            this.container3.appendChild(this.time3);
+            this.container4.appendChild(this.profilepic4);
+            this.container4.appendChild(this.message4);
+            this.container4.appendChild(this.time4);
+
+            this.appendChild(this.header);
+            this.appendChild(this.container1);
+            this.appendChild(this.container2);
+            this.appendChild(this.container3);
+            this.appendChild(this.container4);
+        }
+
+        onbotonclick()
+        {
+            setTimeout(() => {                                //stack overflow said:
+                this.boton.style = "display: none";
+                this.container1.style = "display: block";
+            }, 1000);
+
+            setTimeout(() => {
+                this.container2.style = "display: block";
+            }, 2000);
+
+            setTimeout(() => {
+                this.container3.style = "display: block";
+            }, 3000);
+
+            setTimeout(() => {
+                this.container4.style = "display: block";
+            }, 6000);
+            
+        }
+
+        connectedCallback()
+        {
+            this.boton.onclick = this.onbotonclick.bind(this);
+        }
+
+        disconnectedCallback()
+        {
+            this.boton.onclick = null;
+        }
+    }
+
+    customElements.define('x-ejercicio4', Ejercicio4);
+    function main()
+    {
+        let miEjercicio = new Ejercicio4();
+        document.body.appendChild(miEjercicio);
+    }
+    window.onload = main;
+</script>
+</html>

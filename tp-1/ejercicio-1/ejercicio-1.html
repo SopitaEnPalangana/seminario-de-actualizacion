@@ -1,0 +1,97 @@
+<!--1. Construya un programa que solicite al usuario el nombre, luego el apellido 
+y finalmente muestre un saludo como el siguiente:
+¡Buenos días APELLIDO, Nombre!. 
+Teniendo en cuenta que el apellido aparezca completamente en mayúsculas 
+y el nombre con la mayúscula en la primera letra.
+Independientemente de cómo sea recibidas las cadenas de texto. -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ejercicio-1</title>
+    </head>
+    <style>
+        .start{
+            text-align: center;
+            margin-top: 200px;
+            height: 100px;
+        }
+        .start button{
+            margin-top: 25px;
+            height: 50%;
+            border-radius: 10%;
+            border-color: black;
+            font-size: medium;
+            font-weight: bold;
+        }
+        .content{
+
+            font-size: larger;
+            font-weight: bolder;
+            margin-top: 20px;
+        }
+    </style>
+    <body></body>
+    <script type="text/javascript">
+        class Ejercicio extends HTMLElement
+        {
+            constructor()
+            {
+                super()
+
+                this.greatingForm = document.createElement('div');
+                this.greatingForm.className = 'start';
+                this.greatingContent = document.createElement('div');
+                this.greatingContent.className = 'content';
+                this.greatingContent.innerText = '';
+
+                this.greatbtn = document.createElement('button');
+                this.greatbtn.innerText = 'Greetings!';
+
+                this.greatingForm.appendChild(this.greatbtn);
+                this.greatingForm.appendChild(this.greatingContent);
+
+                this.appendChild(this.greatingForm);
+            }
+
+            ongreatbtnclick()
+            {
+                const name = prompt("Ingrese su nombre: ");
+                const surname = prompt("Ingrese su apellido: ");
+
+                function capital(nombre)
+                {
+                    return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
+                }
+
+                if(name && surname)
+                {
+                    let SURNAME = surname.toUpperCase();
+                    let Name = capital(name);
+                    this.greatingContent.innerText = '¡Buenos días ' + SURNAME + ', ' + Name + '!.';
+                }
+            }
+
+            connectedCallback()
+            {
+                this.greatbtn.onclick = this.ongreatbtnclick.bind(this);
+            }
+
+            disconnectedCallback()
+            {
+                this.greatbtn.onclick = null;
+            }
+
+        }
+
+        customElements.define('x-ejercicio', Ejercicio);
+        function main()
+        {
+            let miEjercicio = new Ejercicio();
+            document.body.appendChild(miEjercicio);
+        }
+        window.onload = main;
+    </script>
+</html>
