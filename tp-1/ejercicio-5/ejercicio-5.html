@@ -2,16 +2,6 @@
 Desarrolle un WebComponent tipo "Formulario" que le permita cargar toda la información pertinente de la factura de AFIP adjuntada. 
 Este WebComponent deberá tener un botón "Generar factura" que deberá abrir una pestaña nueva con una gráfica del diseño de la factura solicitada
 
-            const formData = new FormData(this.invoiceform);
-            const body = new URLSearchParams(formData).toString();
-
-            const response = await fetch('/invoice', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: body
-            });
-            const data = await response.json();
-            console.log(data); // por ahora verificás que llegue bien
 -->
 
 <!DOCTYPE html>
@@ -92,7 +82,19 @@ Este WebComponent deberá tener un botón "Generar factura" que deberá abrir un
             this.condicionventa = document.createElement('input');
             this.condicionventa.name = "condicionventa";
 
-            
+            //ingresar productos
+            this.productdiv = document.createElement('div');
+            this.newproductbtn = document.createElement('button');
+            this.newproductbtn.innerText= 'Agregar Producto';
+            this.newproductbtn.type = "button";
+
+            this.productdiv.appendChild(this.newproductbtn);
+
+            this.productslist = [];
+
+            this.productsHidden = document.createElement('input');
+            this.productsHidden.type = 'hidden';
+            this.productsHidden.name = 'products';
 
             this.boton = document.createElement('button');
             this.boton.innerText = 'Submit';
@@ -116,21 +118,92 @@ Este WebComponent deberá tener un botón "Generar factura" que deberá abrir un
             this.invoiceform.appendChild(this.domicilio);
             this.invoiceform.appendChild(this.condicionventalabel);
             this.invoiceform.appendChild(this.condicionventa);
+            this.invoiceform.appendChild(this.productsHidden);
+            this.invoiceform.appendChild(this.productdiv);
             
-
-
+            this.invoiceform.appendChild(this.boton);
             
-            //this.invoiceform.appendChild(this.boton);
-
             this.appendChild(this.container);
             this.appendChild(this.invoiceform);
         }
 
-        onbotonclick()
+        onnewproductbtnclick()
         {
-            console.log("Generando factura");
+            const productrow = document.createElement('div');
 
-        }
+            const productolabel = document.createElement('label');
+            productolabel.innerText = "\n \n Producto / Servicio: ";
+            const producto = document.createElement('input');
+
+            const cantidadlabel = document.createElement('label');
+            cantidadlabel.innerText = "\n Cantidad: ";
+            const cantidad = document.createElement('input');
+
+            const unidadmedidalabel = document.createElement('label');
+            unidadmedidalabel.innerText = " U. Medida: ";
+            const unidadmedida = document.createElement('input');
+            unidadmedida.placeholder = "m / kg / unidad / otras unidades";
+
+            const preciounitlabel = document.createElement('label');
+            preciounitlabel.innerText = "\n Precio Unitario: $";
+            const preciounit = document.createElement('input');
+
+            const bonificalabel = document.createElement('label');
+            bonificalabel.innerText = "\n % Bonificación: " ;
+            const bonifica = document.createElement('input');
+
+            const subtotallabel = document.createElement('label');
+            subtotallabel.innerText = "\n Subtotal: ";
+            const subtotal = document.createElement('label');
+            subtotal.innerText = '';
+
+            const confirmbtn = document.createElement('button');
+            confirmbtn.innerText = "Confirmar producto";
+            confirmbtn.type = "button";
+
+            confirmbtn.onclick = () => {
+                const costo = eval(preciounit.value * cantidad.value);
+                const desc = eval(costo*bonifica.value/100)
+                subtotal.value = eval(costo-desc);
+                subtotal.innerText = subtotal.value;
+
+
+                const product = {
+                    producto: producto.value,
+                    cantidad: cantidad.value,
+                    unidad: unidadmedida.value,
+                    precio: preciounit.value,
+                    bonificacion: bonifica.value,
+                    subtotal: subtotal.value
+                };
+                this.productslist.push(product);
+                this.productsHidden.value = JSON.stringify(this.productslist);
+                
+                [producto, cantidad, unidadmedida, preciounit, bonifica, confirmbtn]
+                    .forEach(dato => dato.disabled = true);
+
+                console.log("Productos cargados: ", this.productslist);
+            }
+
+            productrow.appendChild(productolabel);
+            productrow.appendChild(producto);
+            productrow.appendChild(cantidadlabel);
+            productrow.appendChild(cantidad);
+            productrow.appendChild(unidadmedidalabel);
+            productrow.appendChild(unidadmedida);
+            productrow.appendChild(preciounitlabel);
+            productrow.appendChild(preciounit);
+            productrow.appendChild(bonificalabel);
+            productrow.appendChild(bonifica);
+            productrow.appendChild(subtotallabel);
+            productrow.appendChild(subtotal);
+            productrow.appendChild(confirmbtn);
+            
+            this.productdiv.appendChild(productrow);
+
+        } 
+
+
 
         onsearchcuitbtnclick()
         {
@@ -142,17 +215,24 @@ Este WebComponent deberá tener un botón "Generar factura" que deberá abrir un
                 this.condicionventa.value = "Cuenta Corriente";
             }
         }
-        
+
+        onbotonclick()
+        {
+            console.log("Generando factura");
+
+        }
         connectedCallback()
         {
             this.boton.onclick = this.onbotonclick.bind(this);
             this.searchcuitbtn.onclick = this.onsearchcuitbtnclick.bind(this);
+            this.newproductbtn.onclick = this.onnewproductbtnclick.bind(this);
         }
 
         disconnectedCallback()
         {
             this.boton.onclick = null;
             this.searchcuitbtn.onclick = null;
+            this.newproductbtn.onclick = null;
         }
 
     }
