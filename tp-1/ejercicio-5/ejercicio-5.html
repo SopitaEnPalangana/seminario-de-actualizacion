@@ -42,6 +42,7 @@ Este WebComponent deberá tener un botón "Generar factura" que deberá abrir un
             this.invoiceform = document.createElement('form');
             this.invoiceform.action = '/invoice';
             this.invoiceform.method = 'POST';
+            this.invoiceform.target = '_blank';
 
             this.periodolabel = document.createElement('label');
             this.periodolabel.innerText = 'Periodo Facturado desde: '
@@ -219,7 +220,6 @@ Este WebComponent deberá tener un botón "Generar factura" que deberá abrir un
         onbotonclick()
         {
             console.log("Generando factura");
-
         }
         connectedCallback()
         {
