@@ -10,7 +10,7 @@ Independientemente de cómo sea recibidas las cadenas de texto. -->
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Ejercicio-1</title>
+        <title>Saludador</title>
     </head>
     <style>
         .start{
@@ -35,7 +35,7 @@ Independientemente de cómo sea recibidas las cadenas de texto. -->
     </style>
     <body></body>
     <script type="text/javascript">
-        class Ejercicio extends HTMLElement
+        class Saludador extends HTMLElement
         {
             constructor()
             {
@@ -56,20 +56,20 @@ Independientemente de cómo sea recibidas las cadenas de texto. -->
                 this.appendChild(this.greatingForm);
             }
 
+            modify_capitals(name)
+            {
+                return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            }
+
             ongreatbtnclick()
             {
                 const name = prompt("Ingrese su nombre: ");
                 const surname = prompt("Ingrese su apellido: ");
 
-                function capital(nombre)
-                {
-                    return nombre.charAt(0).toUpperCase() + nombre.slice(1).toLowerCase();
-                }
-
                 if(name && surname)
                 {
                     let SURNAME = surname.toUpperCase();
-                    let Name = capital(name);
+                    let Name = modify_capitals(name);
                     this.greatingContent.innerText = '¡Buenos días ' + SURNAME + ', ' + Name + '!.';
                 }
             }
@@ -86,11 +86,11 @@ Independientemente de cómo sea recibidas las cadenas de texto. -->
 
         }
 
-        customElements.define('x-ejercicio', Ejercicio);
+        customElements.define('x-saludador', Saludador);
         function main()
         {
-            let miEjercicio = new Ejercicio();
-            document.body.appendChild(miEjercicio);
+            let miSaludador = new Saludador();
+            document.body.appendChild(miSaludador);
         }
         window.onload = main;
     </script>

@@ -9,7 +9,7 @@ Cada error deberá incluir el número de reintentos.
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Ejercicio-2</title>
+        <title>Verificacion de Fecha</title>
     </head>
     <style>
         .container{
@@ -20,7 +20,7 @@ Cada error deberá incluir el número de reintentos.
     </style>
     <body></body>
     <script type="text/javascript">
-        class Ejercicio2 extends HTMLElement 
+        class DateCheck extends HTMLElement 
         {
             constructor()
             {
@@ -32,9 +32,10 @@ Cada error deberá incluir el número de reintentos.
                 this.container.className = 'container';
 
                 this.messagetext = document.createElement('p');
+                this.messagetext.textContent = 'Ingrese su fecha de nacimiento (DD/MM/AAAA):';
                 this.errorsign = document.createElement('p');
                 this.errorsign.style.color = 'red';
-
+                
                 this.inputFecha = document.createElement('input');
                 this.inputFecha.type = 'text';
                 this.inputFecha.placeholder = 'DD/MM/AAAA';
@@ -46,12 +47,11 @@ Cada error deberá incluir el número de reintentos.
                 this.container.appendChild(this.inputFecha);
                 this.container.appendChild(this.boton);
                 this.container.appendChild(this.errorsign);
-
+                
                 this.appendChild(this.container);
             }
-
+            
             connectedCallback() {
-                this.messagetext.textContent = 'Ingrese su fecha de nacimiento (DD/MM/AAAA):';
                 this.boton.onclick = this.validar.bind(this);
             }
 
@@ -99,11 +99,11 @@ Cada error deberá incluir el número de reintentos.
             }
         }
 
-        customElements.define('x-ejercicio', Ejercicio2);
+        customElements.define('x-datecheck', DateCheck);
         function main()
         {
-            let miEjercicio = new Ejercicio2();
-            document.body.appendChild(miEjercicio);
+            let miDateCheck = new DateCheck();
+            document.body.appendChild(miDateCheck);
         }
 
         window.onload = main;
