@@ -1,0 +1,116 @@
+<!--
+Observe la imagen adjuntada "ejercicio_3_equalizer". Construya el WebComponent correspondiente. 
+Considere que el WebComponent internamente contiene una propiedad que se trata de 
+un objeto de datos que posee toda la información representada en la imagen. 
+El WebComponent debe tener un método llamado  getData para obtener dichos datos y setData para asignarlos. 
+El método setData debe aplicar instantánteamente las modificaciones visuales.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equalizer</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+    class Equalizer extends HTMLElement
+    {
+        constructor()
+        {
+            super();
+
+            this.headerdiv = document.createElement('div');
+            
+            this.titlebar = document.createElement('p');
+            this.titlebar.innerText = 'Graphic EQ';
+            
+            this.selectmod = document.createElement('input');            //ver despues como seleccionarlos
+            
+            this.savebutton = document.createElement('button');
+            this.savebutton.innerText = 'Save';
+            this.cancelbutton = document.createElement('button');
+            this.cancelbutton.innerText = ' X ';
+            
+            this.headerdiv.appendChild(this.titlebar);
+            this.headerdiv.appendChild(this.selectmod);
+            this.headerdiv.appendChild(this.savebutton);
+            this.headerdiv.appendChild(this.cancelbutton);
+            
+            this.slidersdiv = document.createElement('div');
+
+            this.tablita = document.createElement('table');
+            let labelsrow = this.tablita.insertRow();
+            let slidersrow = this.tablita.insertRow();
+            let decibelrow = this.tablita.insertRow();
+
+            this.slidersdiv.appendChild(this.tablita);
+            
+            const frecuencias = ['32Hz', '64Hz', '130Hz', '260Hz', '500Hz', '1k', '2k', '4k', '8.3k', '16.5k'];
+            const mapeosliders = new Map();
+            frecuencias.forEach( function(frecuenc)
+            {
+                const labelhz = document.createElement('label');
+                labelhz.innerText = frecuenc;
+
+                const labelcolumn = labelsrow.insertCell();
+                labelcolumn.appendChild(labelhz);
+
+                const slider = document.createElement('input');
+                slider.type = 'range';
+                slider.style = 'writing-mode: vertical-lr; direction: rtl;';
+                slider.min = -12;
+                slider.max = 12;
+                slider.value = 0;
+                slider.step = 1;
+                
+                mapeosliders.set(frecuenc, slider.value)
+
+                const slidercolumn = slidersrow.insertCell();
+                slidercolumn.appendChild(slider);
+
+                const labeldecibel = document.createElement('label');
+                labeldecibel.innerText = '+' + slider.value + 'dB';
+                const decibelcolumn = decibelrow.insertCell();
+                decibelcolumn.appendChild(labeldecibel);
+
+                slider.oninput = this.onsliderinput.bind(slider, labeldecibel);
+
+
+            }.bind(this)); 
+            
+            this.appendChild(this.headerdiv);
+            this.appendChild(this.slidersdiv);
+        }
+
+        onsliderinput(labeldecibel)
+        {
+            const value = parseInt(this.value);
+            labeldecibel.innerText = value > 0 ? '+' + value + 'dB' : value + 'dB';
+        }
+
+        connectedCallback()
+        {
+            slider.oninput = this.onsliderinput.bind(slider, labeldecibel);
+        }
+
+        disconnectedCallback()
+        {
+            slider.oninput = null;
+        }
+
+
+    }
+
+    customElements.define('x-equalizer', Equalizer);
+    function main()
+    {
+        let miEcualizador = new Equalizer();
+        document.body.appendChild(miEcualizador);
+    }
+    window.onload = main;
+</script>
+</html>
