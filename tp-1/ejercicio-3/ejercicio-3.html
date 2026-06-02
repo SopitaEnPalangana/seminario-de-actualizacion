@@ -12,10 +12,37 @@ El método setData debe aplicar instantánteamente las modificaciones visuales.
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equalizer</title>
-</head>
-<body>
+    <style>
+        x-equalizer {
+            justify-content: center;
+            align-items: center;
+            background: rgb(209, 200, 189);
+            font-family:'Courier New', Courier, monospace;
+            font-weight: bolder;
+        }
+        .div{
+            background: rgb(209, 200, 189);
+        }
+        .table{  
+            width: auto;
+            margin: 20px;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background: rgb(209, 200, 189);
+        }
+        .titlebar{
+            background-color: rgba(11, 67, 172, 0.925);
+            color: white;
+            padding: 2px;
+        }
+        .cancelbutton{
+            color: red;
+            font-weight: bold;
+        }
 
-</body>
+    </style>
+</head>
+<body></body>
 <script type="text/javascript">
     class Equalizer extends HTMLElement
     {
@@ -24,34 +51,51 @@ El método setData debe aplicar instantánteamente las modificaciones visuales.
             super();
 
             this.headerdiv = document.createElement('div');
+            this.headerdiv.classList.add("div");
             
             this.titlebar = document.createElement('p');
             this.titlebar.innerText = 'Graphic EQ';
-            
-            this.selectmod = document.createElement('input');            //ver despues como seleccionarlos
-            
+            this.titlebar.classList.add("titlebar");
+
+            this.modos = {                       //le pedi valores a claude
+                'Default': [0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+                'Bass':  [8,  6,  4,  2,  0,  0,  0,  0,  0,  0],
+                'Treble': [0,  0,  0,  0,  0,  2,  4,  6,  8, 10],
+                'Rock':  [4,  3,  0, -1, -2,  0,  2,  4,  5,  5],
+            };
+
+            this.selectmod = document.createElement('select');
+            this.updateOptions();
+
+            this.newname = document.createElement('input');
+            this.newname.placeholder = 'New Mode Name';
+
             this.savebutton = document.createElement('button');
             this.savebutton.innerText = 'Save';
             this.cancelbutton = document.createElement('button');
             this.cancelbutton.innerText = ' X ';
+            this.cancelbutton.classList.add("cancelbutton");
             
             this.headerdiv.appendChild(this.titlebar);
             this.headerdiv.appendChild(this.selectmod);
+            this.headerdiv.appendChild(this.newname);
             this.headerdiv.appendChild(this.savebutton);
             this.headerdiv.appendChild(this.cancelbutton);
             
             this.slidersdiv = document.createElement('div');
+            this.slidersdiv.classList.add("div");
 
             this.tablita = document.createElement('table');
+            this.tablita.classList.add("table");
             let labelsrow = this.tablita.insertRow();
             let slidersrow = this.tablita.insertRow();
             let decibelrow = this.tablita.insertRow();
 
             this.slidersdiv.appendChild(this.tablita);
             
-            const frecuencias = ['32Hz', '64Hz', '130Hz', '260Hz', '500Hz', '1k', '2k', '4k', '8.3k', '16.5k'];
-            const mapeosliders = new Map();
-            frecuencias.forEach( function(frecuenc)
+            this.frecuencias = ['32Hz', '64Hz', '130Hz', '260Hz', '500Hz', '1k', '2k', '4k', '8.3k', '16.5k'];
+            this.mapeosliders = new Map();
+            this.frecuencias.forEach( function(frecuenc)
             {
                 const labelhz = document.createElement('label');
                 labelhz.innerText = frecuenc;
@@ -67,23 +111,25 @@ El método setData debe aplicar instantánteamente las modificaciones visuales.
                 slider.value = 0;
                 slider.step = 1;
                 
-                mapeosliders.set(frecuenc, slider.value)
-
                 const slidercolumn = slidersrow.insertCell();
                 slidercolumn.appendChild(slider);
-
+                
                 const labeldecibel = document.createElement('label');
                 labeldecibel.innerText = '+' + slider.value + 'dB';
                 const decibelcolumn = decibelrow.insertCell();
                 decibelcolumn.appendChild(labeldecibel);
-
+                
+                this.mapeosliders.set(frecuenc, {slider, labeldecibel})                
                 slider.oninput = this.onsliderinput.bind(slider, labeldecibel);
 
-
             }.bind(this)); 
+
+            this.contentdiv = document.createElement('div');
+            this.contentdiv.innerText = "";
             
             this.appendChild(this.headerdiv);
             this.appendChild(this.slidersdiv);
+            this.appendChild(this.contentdiv);
         }
 
         onsliderinput(labeldecibel)
@@ -92,17 +138,67 @@ El método setData debe aplicar instantánteamente las modificaciones visuales.
             labeldecibel.innerText = value > 0 ? '+' + value + 'dB' : value + 'dB';
         }
 
+        setData()
+        {
+            const name = this.selectmod.value;
+            const values = this.modos[name];
+
+            this.frecuencias.forEach(function(freq, i) {
+                const entry = this.mapeosliders.get(freq);
+                entry.slider.value = values[i];
+    
+                this.onsliderinput.call(entry.slider, entry.labeldecibel);
+            }.bind(this));
+        }
+
+        getData()
+        {
+            const nameentry = this.newname.value;
+            const savedvalues = [];
+            this.frecuencias.forEach(function(freq, i) {
+                const entry = this.mapeosliders.get(freq);
+                savedvalues.push(entry.slider.value)
+            }.bind(this));
+            this.modos[nameentry] = savedvalues;
+            this.contentdiv.innerText = nameentry;
+
+            while (this.selectmod.firstChild) {
+                this.selectmod.removeChild(this.selectmod.lastChild);
+            }
+            this.updateOptions();
+        }
+
+        oncancelbuttonclick()
+        {
+            this.selectmod.value = 'Default';
+            this.setData();
+        }
+
+        updateOptions()
+        {
+            Object.keys(this.modos).forEach(function(name){
+                const option = document.createElement('option');
+                option.innerText = name;
+                option.value = name;
+                this.selectmod.appendChild(option);
+            }.bind(this));
+        }
+
         connectedCallback()
         {
-            slider.oninput = this.onsliderinput.bind(slider, labeldecibel);
+            //slider.oninput = this.onsliderinput.bind(slider, labeldecibel);
+            this.selectmod.onchange = this.setData.bind(this);
+            this.savebutton.onclick = this.getData.bind(this);
+            this.cancelbutton.onclick = this.oncancelbuttonclick.bind(this);
         }
 
         disconnectedCallback()
         {
-            slider.oninput = null;
+            //slider.oninput = null;
+            this.selectmod.onchange = null;
+            this.savebutton.onclick = null;
+            this.cancelbutton.onclick = null;
         }
-
-
     }
 
     customElements.define('x-equalizer', Equalizer);
