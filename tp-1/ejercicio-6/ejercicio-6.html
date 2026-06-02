@@ -1,0 +1,96 @@
+<!--
+Desarrolle un WebComponent que represente toda la información de los datos metereológicos de Mar del Plata tal como se muestra en la imagen. 
+En este caso, considere agregar un método al WebComponent que le permita obtener el conjunto de todos los promedios de todas las temperaturas representadas. 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos-Meteorologicos</title>
+</head>
+<body></body>
+<script type="text/javascript">
+
+    class RegistroTemperaturas extends HTMLElement
+    {
+        constructor()
+        {
+            super()
+
+            let tablita = document.createElement('table');
+            const titlerow = tablita.insertRow();
+            const headerCol = titlerow.insertCell();
+            headerCol.colSpan = 13;
+            this.header = document.createElement('label');
+            this.header.innerText = 'Parametros climaticos promedio de Mar del Plata, BA (1961-1990).';
+            headerCol.appendChild(this.header);
+            
+            
+            const months = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.'];
+            const meassurements = ['Temp. max. abs. (ºC)', 'Temp. max. media (ºC)', 'Temp. media (ºC)', 'Temp. min. media (ºC)', 'Temp. min. abs. (ºC)', 
+            'Precipitacion total (mm)', 'Dias de Precipitaciones (>= 0.1mm)', 'Horas de sol', 'Humedad relativa (%)'];
+            
+            const meslabel = document.createElement('label');
+            meslabel.innerText = 'Mes';
+            const monthrow = tablita.insertRow();
+            const firstcolumn = monthrow.insertCell();
+            firstcolumn.appendChild(meslabel);
+            
+            months.forEach(function(month)
+            {
+                const monthlabel = document.createElement('label');
+                monthlabel.innerText = month;
+                const column = monthrow.insertCell();
+                column.appendChild(monthlabel);
+            });
+
+            const anuallabel = document.createElement('label');
+            anuallabel.innerText = 'Anual';
+            const lastcolumn = monthrow.insertCell();
+            lastcolumn.appendChild(anuallabel);
+
+            meassurements.forEach(function(meassure)
+            {
+                const meassurelabel = document.createElement('label');
+                meassurelabel.innerText = meassure;
+                const addRow = tablita.insertRow();
+                const meassureCol = addRow.insertCell().appendChild(meassurelabel);
+
+                months.forEach(function(month)
+                {
+                    const valueCol = addRow.insertCell();
+                    const valuelabel = document.createElement('label');
+                    valuelabel.innerText = 'Nº';
+                    valueCol.appendChild(valuelabel);
+                });
+            });
+            
+
+            let fuenterow = tablita.insertRow();
+            let fuentelabel = document.createElement('label');
+            fuentelabel.innerText = 'Fuente nº1: NOAA, Servicio Meteorologico Nacional (precipitation days)';
+            let fuenteCol = fuenterow.insertCell();
+            fuenteCol.colSpan = 13;
+            fuenteCol.appendChild(fuentelabel);
+
+            let lastrow = tablita.insertRow();
+            let lastlabel = document.createElement('label');
+            lastlabel.innerText = 'Fuente nº2: UNLP(sun only)';
+            let lastCol = lastrow.insertCell();
+            lastCol.colSpan = 13;
+            lastCol.appendChild(lastlabel);
+            
+            this.appendChild(tablita);
+        }
+    }
+
+    customElements.define('x-registro-temperaturas', RegistroTemperaturas);
+    function main()
+    {
+        let miRegistro = new RegistroTemperaturas();
+        document.body.appendChild(miRegistro);
+    }
+    window.onload = main;
+</script>
+</html>

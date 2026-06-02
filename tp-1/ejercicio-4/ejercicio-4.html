@@ -114,12 +114,29 @@ y diseñe un método que permita insertar los mensajes intercambiados.
             this.header = document.createElement('div');
             this.header.className = 'header';
             this.titleH = document.createElement('h2');
-            this.titleH.textContent = "Chat Messages";
-            this.boton = document.createElement('button');
-            this.boton.innerText = "Start";
+            this.titleH.textContent = "Chat";
 
+            this.writing_frame = document.createElement('div');
+            this.leftsideMessage = document.createElement('input');
+            this.leftsideMessage.style = 'float: left;';
+            this.leftbtn = document.createElement('button');
+            this.leftbtn.innerText = 'Send message (L)';
+            this.leftbtn.style = 'float: left;';
+            this.rightsideMessage = document.createElement('input');
+            this.rightsideMessage.style = 'float: right;';
+            this.rightbtn = document.createElement('button');
+            this.rightbtn.innerText = 'Send message (R)';
+            this.rightbtn.style = 'float:right;';
+
+            
             this.header.appendChild(this.titleH);
-            this.header.appendChild(this.boton);
+            this.writing_frame.appendChild(this.leftsideMessage);
+            this.writing_frame.appendChild(this.rightbtn);
+            this.writing_frame.appendChild(this.rightsideMessage);
+            this.writing_frame.appendChild(this.leftbtn);
+
+            this.testtext = document.createElement('p');
+            this.testtext.innerText = 'test texting';
 
             this.container1 = document.createElement('div');
             this.container1.className = 'container';
@@ -189,10 +206,12 @@ y diseñe un método que permita insertar los mensajes intercambiados.
             this.container4.appendChild(this.time4);
 
             this.appendChild(this.header);
+            this.appendChild(this.testtext);
             this.appendChild(this.container1);
             this.appendChild(this.container2);
             this.appendChild(this.container3);
             this.appendChild(this.container4);
+            this.appendChild(this.writing_frame);
         }
 
         onbotonclick()
