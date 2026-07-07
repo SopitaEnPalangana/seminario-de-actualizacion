@@ -1,6 +1,6 @@
 <!--
-Desarrolle un WebComponent que represente toda la información de los datos metereológicos de Mar del Plata tal como se muestra en la imagen. 
-En este caso, considere agregar un método al WebComponent que le permita obtener el conjunto de todos los promedios de todas las temperaturas representadas. 
+7. Extienda el WebComponent desarrollado en el punto anterior, 
+y agregue un botón que permita alternar la visualización de temperaturas de (ºC) a (ºF) y viceversa.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +62,7 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
         {
             super()
             
-            const months = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.', 'Anual'];
+            this.months = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Sep.', 'Oct.', 'Nov.', 'Dic.', 'Anual'];
             this.meassurements = [
                 'Temp. max. abs. (ºC)', 
                 'Temp. max. media (ºC)', 
@@ -86,15 +86,16 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
 
             this.meassuredata = [tempmaxabs, tempmaxmedia, tempmedia, tempminmedia, tempminabs, precipitacion,diasdeprecip,horasdesol,humedadrelativa];
 
-            const monthlyvalues = new Map();
+            this.monthlyvalues = new Map(); //para guardar los valores
+            this.valueLabels = new Map(); //para guardar la referencia al label correcto
 
             this.meassurements.forEach((meassure, j) =>  //tuve que usar una flecha porque no me dejaba acceder a las variables
             {
                 let data = this.meassuredata[j];
 
-                months.forEach(function(month, i)
+                this.months.forEach((month, i) =>
                 {
-                        monthlyvalues.set(`${meassure}-${month}`, data[i]);
+                    this.monthlyvalues.set(`${meassure}-${month}`, data[i]);
                 });
             });
 
@@ -111,6 +112,11 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
                 const luminosidad = 90 - (porcentaje * 50);
                 return `hsl(0, 80%, ${luminosidad}%)`;
             }
+
+            this.unidad =
+            {
+                medida: 'cel', 
+            };
             //---------------------------------------------
  
             let tablita = document.createElement('table');
@@ -131,7 +137,7 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
             firstcolumn.classList.add('row');
             firstcolumn.appendChild(meslabel);
             
-            months.forEach(function(month)
+            this.months.forEach((month) =>
             {
                 const monthlabel = document.createElement('label');
                 monthlabel.innerText = month;
@@ -139,6 +145,7 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
                 column.classList.add('row');
                 column.appendChild(monthlabel);
             });
+
 
             this.meassurements.forEach((meassure, j) =>
             {
@@ -155,13 +162,15 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
                 const max = Math.max(...datosDeFila);
                 //------------
 
-                months.forEach(function(month)
+                this.months.forEach((month) =>
                 {
                     const valueCol = addRow.insertCell();
                     valueCol.classList.add('row');
                     const valuelabel = document.createElement('label');
-                    const valor = monthlyvalues.get(`${meassure}-${month}`);
+                    const valor = this.monthlyvalues.get(`${meassure}-${month}`);
                     valuelabel.innerText = valor;
+
+                    this.valueLabels.set(`${meassure}-${month}`, valuelabel);
 
                     // calculamos y aplicamos el color
                     const porcentaje = normalizar(valor, min, max);
@@ -169,10 +178,9 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
 
                     valueCol.appendChild(valuelabel);
                 });
-
             });
-            
 
+            
             let fuenterow = tablita.insertRow();
             fuenterow.classList.add('textrow');
             let fuentelabel = document.createElement('label');
@@ -191,34 +199,57 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
 
             this.averagebtn = document.createElement('button');
             this.averagebtn.innerText = 'Ver Promedios';
-
+            this.celsiusbtn = document.createElement('button');
+            this.celsiusbtn.innerText = 'Ver en Cº';
+            this.farenheitbtn = document.createElement('button');
+            this.farenheitbtn.innerText = 'Ver en Fº';
+            if(this.unidad.medida == 'cel')
+            {
+                this.celsiusbtn.style.display = 'disabled';
+            }
+            else
+            {
+                this.farenheitbtn.style.display = 'disabled';
+            }
+            
+            this.average_frame = document.createElement('div');
             
             this.appendChild(tablita);
             this.appendChild(this.averagebtn);
+            this.appendChild(this.celsiusbtn);
+            this.appendChild(this.farenheitbtn);
+            this.appendChild(this.average_frame);
         }
 
         onaveragebtnclick()
-        {
-            const promedio = this.meassuredata.map(function(datalist)
+        {                        
+            while(this.average_frame.firstChild) 
+            {
+                this.average_frame.removeChild(this.average_frame.lastChild);
+            };
+
+
+            const promedio = this.meassurements.map((meassure) =>
             {
                 let contador = 0;
                 let suma = 0;
-                datalist.forEach(function(value)
-                {   
+
+                this.months.forEach((month) =>
+                {
                     if(contador < 12) //para que no incluya el valor de Anual
                     {
+                        let value = this.monthlyvalues.get(`${meassure}-${month}`);
                         suma += value;
                         contador++;
                     }
                 });
-                return suma/contador;
+
+                return (suma/contador).toFixed(2);
             });
-
-            const average_frame = document.createElement('div');
-            this.appendChild(average_frame);
-
+            
             promedio.forEach((value, i) =>
             {
+
                 let newAverage = document.createElement('div');
                 newAverage.classList.add('averages');
                 let meassure = this.meassurements[i];
@@ -230,18 +261,84 @@ En este caso, considere agregar un método al WebComponent que le permita obtene
                 newAverage.appendChild(averageLabel);
                 newAverage.appendChild(averageValue);
 
-                average_frame.appendChild(newAverage);
+                this.average_frame.appendChild(newAverage);
             });
+
+        }
+
+        onvercelsiusclick()
+        {
+            while(this.average_frame.firstChild) 
+            {
+                this.average_frame.removeChild(this.average_frame.lastChild);
+            };
+
+            if(this.unidad.medida == 'far')
+            {
+                for (let i = 0; i < 5; i++)
+                {
+                    this.months.forEach((month) =>
+                    {
+                        let far = this.monthlyvalues.get(`${this.meassurements[i]}-${month}`);
+                        let cels = (far - 32) * 5/9;
+                        this.monthlyvalues.set(`${this.meassurements[i]}-${month}`, cels);
+    
+                        let label = this.valueLabels.get(`${this.meassurements[i]}-${month}`);
+                        label.innerText = cels.toFixed(1);
+                    });
+                }
+
+                this.unidad.medida = 'cel';
+            }
+            else
+            {
+                console.log('ERROR: Ya esta en Cº');
+            }
+
+        }
+
+        onverfarenheitclick()
+        {
+            while(this.average_frame.firstChild) 
+            {
+                this.average_frame.removeChild(this.average_frame.lastChild);
+            };
+
+            if(this.unidad.medida == 'cel')
+            {
+                for (let i = 0; i < 5; i++)
+                {
+                    this.months.forEach((month) =>
+                    {
+                        let cels = this.monthlyvalues.get(`${this.meassurements[i]}-${month}`);
+                        let far = (cels * 9/5) + 32;
+                        this.monthlyvalues.set(`${this.meassurements[i]}-${month}`, far);
+    
+                        let label = this.valueLabels.get(`${this.meassurements[i]}-${month}`);
+                        label.innerText = far.toFixed(2);
+                    });
+                }
+                this.unidad.medida = 'far';
+
+            }
+            else
+            {
+                console.log('ERROR: Ya esta en Fº');
+            }
         }
 
         connectedCallback()
         {
             this.averagebtn.onclick = this.onaveragebtnclick.bind(this);
+            this.celsiusbtn.onclick = this.onvercelsiusclick.bind(this);
+            this.farenheitbtn.onclick = this.onverfarenheitclick.bind(this);
         }
 
         disconnectedCallback()
         {
             this.averagebtn.onclick = null;
+            this.celsiusbtn.onclick = null;
+            this.farenheitbtn.onclick = null;
         }
     }
 
