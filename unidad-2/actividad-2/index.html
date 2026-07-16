@@ -1,0 +1,314 @@
+<!--
+1. Analice el código proporcionado en el "index.html". 
+De todo lo que está allí, deberemos efectuar una limpieza importante y sólo dejar:
+-Barra superior con botones del lado derecho (sin barra de búsqueda)
+-Barra lateral izquierda
+-Cuerpo derecho (dejarlo vacío)
+-Pié
+-Se debe conservar todo el enlazamiento a código CSS de las etiquetas <link>
+
+2. Una vez que la plantilla "index.html" esté depurada y limpia. 
+Comenzar a implementar la clase WCApplicationView de modo tal que el WebComponent libre de HTML 
+permita la visualización correcta de la plantilla gráfica de la aplicación.
+
+3. Identificar que algunas etiquetas html del proyecto original, 
+contienen manejadores embebidos que deben migrarse:
+    <div class="w3-display-right w3-padding-small w3-margin-right" onclick="this.parentNode.children[1].focus()">
+
+Por ejemplo, aquí ese atributo onclick contiene código JS que no puede estar allí. 
+Deberá escribirse un manejador de evento acorde que contenga dicho código. 
+Ej:   onDivClick(event){   this.parentNode.children[1].focus() }   
+y ser vinculado/desvinculado adecuadamente en connectedCallback / disconnectedCallback.
+
+El nombre del manejador es una sugerencia. 
+No debe utilizar ese, sino uno que represente adecuadamente la semántica de lo que está representando.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WC Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="./w3admin/assets/icons/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./w3admin/assets/css/w3pro-4.13.css">
+    <link rel="stylesheet" href="./w3admin/assets/css/w3-theme.css">
+    <link rel="stylesheet" href="./w3admin/assets/css/admin-styles.css">
+    <link rel="stylesheet" href="./w3admin/assets/css/scrollbar.css">
+</head>
+<body></body>
+
+<script type="text/javascript">
+
+    class WCApplicationView extends HTMLElement
+    {
+        constructor()
+        {
+            super()
+
+            let sidebarControl = document.createElement('input');
+            sidebarControl.type = 'checkbox';
+            sidebarControl.classList.add('w3-hide');
+            let appdiv = document.createElement('div');
+            appdiv.id = 'app';
+            let barcontainerdiv = document.createElement('div');
+            barcontainerdiv.classList.add('w3-top', 'w3-card');
+            barcontainerdiv.style = 'height:54px';
+
+            let generaldiv = document.createElement('div');
+            generaldiv.classList.add('w3-flex-bar', 'w3-theme', 'w3-left-align');
+            let containerdiv = document.createElement('div');
+            containerdiv.classList.add('admin-logo', 'w3-bar-item', 'w3-hide-medium', 'w3-hide-small');
+            let adminLogo = document.createElement('img');
+            adminLogo.src = "./w3admin/assets/admin-logo.png";
+            adminLogo.alt = 'w3mix';
+            adminLogo.class = 'w3-image';
+            adminLogo.width = '26';
+
+            let w3AdminTitle = document.createElement('a');
+            w3AdminTitle.href = './index.html';
+            w3AdminTitle.classList.add('w3-button', 'w3-bold');
+            w3AdminTitle.innerText = ' W3Admin';
+            let h5container = document.createElement('h5');
+            h5container.style = "line-height:1; margin:0!important; font-weight:300";
+
+            h5container.appendChild(adminLogo);
+            h5container.appendChild(w3AdminTitle);
+            containerdiv.appendChild(h5container);
+            generaldiv.appendChild(containerdiv);
+
+            let ilabel = document.createElement('label');
+            ilabel.for = 'sidebar-control';
+            ilabel.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+            let ibars = document.createElement('i');
+            ibars.classList.add('fa', 'fa-bars');
+            ilabel.appendChild(ibars);
+            generaldiv.appendChild(ilabel);
+
+            let barbuttonsdiv = document.createElement('div');
+            barbuttonsdiv.classList.add('w3-right');
+            let envelopeOpenBtn = document.createElement('button');
+            envelopeOpenBtn.type = 'button';
+            envelopeOpenBtn.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+            let ienvelope = document.createElement('i');
+            ienvelope.classList.add('fa', 'fa-envelope-open');
+            envelopeOpenBtn.appendChild(ienvelope);
+            
+            let bellBtn = document.createElement('button');
+            bellBtn.type = 'button';
+            bellBtn.classList.add('w3-button', 'w3-large', 'w3-opacity-min');
+            let ibell = document.createElement('i');
+            ibell.classList.add('fa', 'fa-bell');
+            bellBtn.appendChild(ibell);
+            
+            barbuttonsdiv.appendChild(envelopeOpenBtn);
+            barbuttonsdiv.appendChild(bellBtn);
+            generaldiv.appendChild(barbuttonsdiv);
+
+            let userfacontainerdiv = document.createElement('div');
+            userfacontainerdiv.classList.add('text-right');
+            let userfa = document.createElement('div');
+            userfa.classList.add('w3-button');
+            let iuserfadiv = document.createElement('div');
+            iuserfadiv.classList.add('w3-circle', 'w3-center', 'w3-text-white', 'w3-primary');
+            iuserfadiv.style = 'width:38px; height:38px';
+            let iuserfa = document.createElement('i');
+            iuserfa.classList.add('fa', 'fa-fw', 'fa-user', 'fa');
+            iuserfa.style = 'margin-top:11px';
+            iuserfadiv.appendChild(iuserfa);
+            userfa.appendChild(iuserfadiv);
+            userfacontainerdiv.appendChild(userfa);
+            generaldiv.appendChild(userfacontainerdiv);
+            barcontainerdiv.appendChild(generaldiv);
+            appdiv.appendChild(barcontainerdiv);
+
+            let menuNav = document.createElement('nav');
+            menuNav.id = 'sidebar';
+            menuNav.classList.add('w3-sidebar', 'w3-top', 'w3-bottom', 'w3-collapse', 'w3-white', 'w3-border-right', 'w3-border-top', 'scrollbar');
+            menuNav.style = 'z-index:3;width:230px;height:auto;margin-top:54px;border-color:rgba(0, 0, 0, .1)!important';
+            menuNav.id = 'mySidebar';
+
+            let sidebarlogodiv = document.createElement('div');
+            sidebarlogodiv.classList.add('w3-bar-item', 'w3-border-bottom', 'w3-hide-large');
+            sidebarlogodiv.style = 'padding:6px 0';
+            let sidebarlable = document.createElement('label');
+            sidebarlable.for = 'sidebar-control';
+            sidebarlable.classList.add('w3-left', 'w3-button', 'w3-large', 'w3-opacity-min');
+            sidebarlable.style = 'background:white!important';
+            let isidebar = document.createElement('i');
+            isidebar.classList.add('fa', 'fa-bars');
+            let sidebarLogo = document.createElement('img');
+            sidebarLogo.src = "./w3admin/assets/admin-logo.png";
+            sidebarLogo.alt = 'w3mix';
+            sidebarLogo.class = 'w3-image';
+            let sidebarTitle = document.createElement('a');
+            sidebarTitle.href = './index.html';
+            sidebarTitle.classList.add('w3-button');
+            sidebarTitle.style = 'background:white!important';
+            sidebarTitle.innerText = ' W3Admin';
+            let h5sidebar = document.createElement('h5');
+            h5sidebar.style = "line-height:1; margin:0!important; font-weight:300";
+            sidebarlable.appendChild(isidebar);
+            sidebarlogodiv.appendChild(sidebarlable);
+            h5sidebar.appendChild(sidebarLogo);
+            h5sidebar.appendChild(sidebarTitle);
+            sidebarlogodiv.appendChild(h5sidebar);
+            menuNav.appendChild(sidebarlogodiv);
+
+            let linksdiv = document.createElement('div');
+            linksdiv.classList.add('w3-bar-block');
+
+            let navigationspan = document.createElement('span');
+            navigationspan.classList.add('w3-bar-item', 'w3-padding', 'w3-small', 'w3-opacity');
+            navigationspan.style = "margin-top:8px";
+            navigationspan.textContent = 'MAIN NAVIGATION';
+
+            let dashboarda = document.createElement('a');
+            dashboarda.href = './index.html';
+            dashboarda.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            dashboarda.innerText = ' Dashboard';
+            let idashboard = document.createElement('i');
+            idashboard.classList.add('fa', 'fa-fw', 'fa-bar-chart');
+            dashboarda.appendChild(idashboard);
+
+            let uiiconsa = document.createElement('a');
+            uiiconsa.href="./icons.html";
+            uiiconsa.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            uiiconsa.innerText = ' UI Icons';
+            let iuiicons = document.createElement('i');
+            iuiicons.classList.add('fa', 'fa-fw', 'fa-fire');
+            uiiconsa.appendChild(iuiicons);
+
+            let formsa = document.createElement('a');
+            formsa.href="./forms.html";
+            formsa.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            formsa.innerText = ' Forms';
+            let iforms = document.createElement('i');
+            iforms.classList.add('fa', 'fa-fw', 'fa-edit');
+            formsa.appendChild(iforms);
+
+            let tablesa = document.createElement('a');
+            tablesa.href="./tables.html";
+            tablesa.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            tablesa.innerText = ' Tables';
+            let itables = document.createElement('i');
+            itables.classList.add('fa', 'fa-fw', 'fa-table');
+            tablesa.appendChild(itables);
+
+            let profilea = document.createElement('a');
+            profilea.href="./profile.html";
+            profilea.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            profilea.innerText = ' Profile';
+            let iprofile = document.createElement('i');
+            iprofile.classList.add('fa', 'fa-fw', 'fa-user-circle');
+            profilea.appendChild(iprofile);
+
+            let logina = document.createElement('a');
+            logina.href="./login.html";
+            logina.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            logina.innerText = ' Login';
+            let ilogin = document.createElement('i');
+            ilogin.classList.add('fa', 'fa-fw', 'fa-lock');
+            logina.appendChild(ilogin);
+
+            let registrationa = document.createElement('a');
+            registrationa.href="./register.html";
+            registrationa.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            registrationa.innerText = ' Registration';
+            let iregistration = document.createElement('i');
+            iregistration.classList.add('fa', 'fa-fw', 'fa-sign-in');
+            registrationa.appendChild(iregistration);
+            
+            let labelsSpan = document.createElement('span');
+            labelsSpan.classList.add('w3-bar-item', 'w3-padding', 'w3-small', 'w3-opacity');
+            labelsSpan.textContent = 'LABELS';
+
+            let importanta = document.createElement('a');
+            importanta.href = "#dashboard";
+            importanta.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            importanta.innerText = ' Important';
+            let iimportant = document.createElement('i');
+            iimportant.classList.add('fa', 'fa-fw', 'fa-coffee', 'w3-text-danger');
+            importanta.appendChild(iimportant);
+
+            let warninga = document.createElement('a');
+            warninga.href = "#dashboard";
+            warninga.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            warninga.innerText = ' Warning';
+            let iwarning = document.createElement('i');
+            iwarning.classList.add('fa', 'fa-fw', 'fa-circle-o-notch', 'w3-text-success');
+            warninga.appendChild(iwarning);
+
+            let informationa = document.createElement('a');
+            informationa.href = "#dashboard";
+            informationa.classList.add('w3-bar-item', 'w3-button', 'w3-padding-large', 'w3-hover-text-primary');
+            informationa.innerText = ' Informationa';
+            let iinformation = document.createElement('i');
+            iinformation.classList.add('fa', 'fa-fw', 'fa-share-alt', 'w3-text-info');
+            informationa.appendChild(iinformation);
+
+            linksdiv.appendChild(navigationspan);
+            linksdiv.appendChild(dashboarda);
+            linksdiv.appendChild(uiiconsa);
+            linksdiv.appendChild(formsa);
+            linksdiv.appendChild(tablesa);
+            linksdiv.appendChild(profilea);
+            linksdiv.appendChild(logina);
+            linksdiv.appendChild(registrationa);
+            linksdiv.appendChild(labelsSpan);
+            linksdiv.appendChild(importanta);
+            linksdiv.appendChild(warninga);
+            linksdiv.appendChild(informationa);
+            menuNav.appendChild(linksdiv);
+            appdiv.appendChild(menuNav);
+
+            let contentsdiv = document.createElement('div');
+            contentsdiv.classList.add('w3-main');
+            contentsdiv.style="margin-top:54px";
+
+            this.bodydiv = document.createElement('div');
+            this.bodydiv.style = "padding:16px 32px";
+
+            contentsdiv.appendChild(this.bodydiv);
+
+            
+            let footerdiv = document.createElement('footer');
+            footerdiv.classList.add('w3-padding', 'w3-border-top', 'w3-center', 'w3-white', 'w3-margin-top');
+            let textspan = document.createElement('span');
+            textspan.classList.add('w3-opacity');
+            textspan.textContent = 'Powered with ♥ by';
+            let footertexta = document.createElement('a');
+            footertexta.href = "https://w3mix.com";
+            footertexta.target = '_blank';
+            footertexta.innerText = 'W3Mix.com';
+            textspan.appendChild(footertexta);
+            footerdiv.appendChild(textspan);
+            contentsdiv.appendChild(footerdiv);
+            appdiv.appendChild(contentsdiv);
+            
+            this.appendChild(appdiv);
+        }
+
+
+        connectedCallback()
+        {
+
+        }
+
+        disconnectedCallback()
+        {
+
+        }
+    }
+
+    customElements.define('x-wcapplicationview', WCApplicationView);
+
+    function main()
+    {
+        let miAppView = new WCApplicationView();
+        document.body.appendChild(miAppView);
+    }
+    window.onload = main;
+</script>
+</html>
